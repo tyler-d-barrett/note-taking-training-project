@@ -1,40 +1,30 @@
 import type { NewNote, Note } from "./shared/note";
 import { useState } from "react";
 
-export function AddNote() {
+export function AddNote({
+  onCreate,
+}: {
+  onCreate: (n: NewNote) => Promise<void> | void;
+}) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<Note | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setCreated(null);
-    setSubmitting(true);
 
     const form = e.currentTarget;
     const fd = new FormData(form);
-    const payload = {
+    const payload: NewNote = {
       title: String(fd.get("title") ?? "").trim(),
       body: String(fd.get("body") ?? "").trim(),
-    } satisfies NewNote;
+    };
 
     try {
-      const res = await fetch("/api/notes", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || `Request failed: ${res.status}`);
-      }
-
-      const note: Note = await res.json();
-      setCreated(note);
+      setSubmitting(true);
+      await onCreate(payload);
       form.reset();
-    } catch (err: unknown) {
+    } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setSubmitting(false);
@@ -80,11 +70,6 @@ export function AddNote() {
       </button>
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-      {created && (
-        <pre className="mt-3 rounded bg-gray-100 p-3 text-xs dark:bg-gray-800 dark:text-gray-100 overflow-x-auto">
-          {JSON.stringify(created, null, 2)}
-        </pre>
-      )}
     </form>
   );
 }
