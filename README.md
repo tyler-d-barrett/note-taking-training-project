@@ -1,7 +1,21 @@
-# note-taking-training-project
+# bun-react-tailwind-template
 
-Note Taking Training Project based on Bun + SQLLite +Typescript + React + Tailwind stack
+To install dependencies:
 
-# How to run
+```bash
+bun install
+```
 
-# APIs
+To start a development server:
+
+```bash
+bun dev
+```
+
+To run for production:
+
+```bash
+bun start
+```
+
+This project was created using `bun init` in bun v1.3.1. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
