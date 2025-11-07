@@ -1,5 +1,7 @@
 import { serve } from "bun";
 import index from "./index.html";
+import { makeNote } from "./shared/note";
+import type { NewNote } from "./shared/note";
 
 const server = serve({
   routes: {
@@ -21,11 +23,26 @@ const server = serve({
       },
     },
 
-    "/api/hello/:name": async req => {
+    "/api/hello/:name": async (req) => {
       const name = req.params.name;
       return Response.json({
         message: `Hello, ${name}!`,
       });
+    },
+
+    "/api/notes": {
+      async POST(req) {
+        const data = (await req.json()) as NewNote;
+        if (!data?.title || !data?.body) {
+          return Response.json(
+            { error: "title and body are required" },
+            { status: 422 }
+          );
+        }
+
+        const note = makeNote({ title: data.title, body: data.body });
+        return Response.json(note, { status: 201 });
+      },
     },
   },
 

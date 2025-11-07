@@ -37,6 +37,9 @@ export function APITester() {
           <option value="PUT" className="py-1">
             PUT
           </option>
+          <option value="POST" className="py-1">
+            POST
+          </option>
         </select>
         <input
           type="text"
