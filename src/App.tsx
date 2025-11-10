@@ -4,9 +4,10 @@ import "./index.css";
 import { NoteCard } from "./NoteCard";
 import logo from "./logo.svg";
 import type { NewNote, Note } from "./shared/note";
+import { loadNotes, saveNotes } from "./storage/notes";
 
 export function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Note[]>(() => loadNotes());
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -43,6 +44,10 @@ export function App() {
       dlg.removeEventListener("cancel", onClose);
     };
   }, []);
+
+  useEffect(() => {
+    saveNotes(notes);
+  }, [notes]);
 
   return (
     <div>
