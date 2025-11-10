@@ -32,18 +32,18 @@ export function AddNote({
   }
 
   return (
-    <form className="max-w-sm mx-auto" onSubmit={onSubmit}>
+    <form className="max-w-sm" onSubmit={onSubmit}>
       <div className="mb-5">
         <label
           htmlFor="title"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-left"
+          className="mb-2 block text-left text-sm font-medium text-gray-900"
         >
           Title
         </label>
         <input
           id="title"
           name="title"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block w-full rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 focus:outline-none"
           placeholder="My Day"
           required
         />
@@ -51,24 +51,25 @@ export function AddNote({
       <div className="mb-5">
         <label
           htmlFor="body"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-left"
+          className="mb-2 block text-left text-sm font-medium text-gray-900"
         >
           Notes
         </label>
         <textarea
           id="body"
           name="body"
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block w-full rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 focus:outline-none"
           placeholder="Start your note..."
         ></textarea>
       </div>
-      <button
-        type="submit"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        {submitting ? "Creating…" : "Create"}
-      </button>
-
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-500 focus:outline-none"
+        >
+          {submitting ? "Creating…" : "Create"}
+        </button>
+      </div>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </form>
   );
