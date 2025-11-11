@@ -24,6 +24,16 @@ export function App() {
     setNotes((prev) => [note, ...prev]);
   }
 
+  async function deleteNote(input: String) {
+    const res = await fetch("/api/notes/{input}", {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Delete failed");
+
+    setNotes((prev) => prev.filter((n) => n.id !== input));
+  }
+
   useEffect(() => {
     const dialog = dialogRef.current!;
     if (!dialog) return;
@@ -92,14 +102,14 @@ export function App() {
             </button>
           </div>
           {notes.map((n: Note) => (
-            <NoteCard key={n.id} note={n} />
+            <NoteCard key={n.id} note={n} deleteNote={deleteNote} />
           ))}
         </div>
       )}
 
       <dialog
         ref={dialogRef}
-        className="fixed inset-0 m-auto w-full max-w-md rounded-lg shadow-xl backdrop:opacity-90 backdrop:backdrop-blur-3xl"
+        className="fixed inset-0 m-auto w-full max-w-md rounded-lg shadow-xl backdrop:opacity-50 backdrop:backdrop-blur-3xl"
       >
         <div className="p-6">
           <div className="mb-4 flex items-center justify-between">

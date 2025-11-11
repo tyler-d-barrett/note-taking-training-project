@@ -2,31 +2,30 @@ import { serve } from "bun";
 import index from "./index.html";
 import { makeNote } from "./shared/note";
 import type { NewNote, Note } from "./shared/note";
-import { loadNotes, saveNotes } from "./storage/notes";
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
 
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
+    // "/api/hello": {
+    //   async GET(req) {
+    //     return Response.json({
+    //       message: "Hello, world!",
+    //       method: "GET",
+    //     });
+    //   },
+    //   async PUT(req) {
+    //     return Response.json({
+    //       message: "Hello, world!",
+    //       method: "PUT",
+    //     });
+    //   },
+    // },
 
     "/api/notes": {
       async POST(req) {
-        const data = (await req.json()) as NewNote;
+        const data: NewNote = await req.json();
         if (!data?.title || !data?.body) {
           return Response.json(
             { error: "title and body are required" },
@@ -36,6 +35,14 @@ const server = serve({
 
         const note: Note = makeNote({ title: data.title, body: data.body });
         return Response.json(note, { status: 201 });
+      },
+    },
+
+    "/api/notes/:id": {
+      async DELETE(req) {
+        const id = req.params.id;
+
+        return new Response(null, { status: 204 });
       },
     },
   },
