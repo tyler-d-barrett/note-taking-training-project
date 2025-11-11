@@ -154,6 +154,7 @@ export function App() {
           </div>
 
           <NoteForm
+            key={selectedNote?.id ?? ""}
             initialTitle={selectedNote?.title ?? ""}
             initialBody={selectedNote?.body ?? ""}
             submitLabel={selectedNote ? "Save changes" : "Create"}
@@ -163,6 +164,7 @@ export function App() {
               } else {
                 await createNote({ title, body });
               }
+              setSelectedNote(null);
               setIsDialogOpen(false);
             }}
           />
