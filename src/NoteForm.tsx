@@ -20,11 +20,18 @@ export function NoteForm({
     setBody(initialBody);
   }, [initialTitle, initialBody]);
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    onSubmit({ title, body });
+
+    setTitle("");
+    setBody("");
+  }
+
   return (
     <form
       onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit({ title, body });
+        handleSubmit(e);
       }}
       className="space-y-3"
     >
