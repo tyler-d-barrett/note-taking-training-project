@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { AddNote } from "./AddNote";
 import "./index.css";
 import { NoteCard } from "./NoteCard";
 import logo from "./logo.svg";
-import type { NewNote, Note } from "./shared/note";
+import type { EditNote, NewNote, Note } from "./shared/note";
 import { loadNotes, saveNotes } from "./storage/notes";
+import { NoteForm } from "./NoteForm";
 
 export function App() {
   const [notes, setNotes] = useState<Note[]>(() => loadNotes());
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   async function createNote(input: NewNote) {
@@ -24,14 +25,37 @@ export function App() {
     setNotes((prev) => [note, ...prev]);
   }
 
-  async function deleteNote(input: String) {
-    const res = await fetch("/api/notes/{input}", {
+  async function deleteNote(id: String) {
+    const res = await fetch(`/api/notes/${id}`, {
       method: "DELETE",
     });
 
     if (!res.ok) throw new Error("Delete failed");
 
-    setNotes((prev) => prev.filter((n) => n.id !== input));
+    setNotes((prev) => prev.filter((n) => n.id !== id));
+  }
+
+  async function editNote(id: string, payload: EditNote) {
+    const res = await fetch(`/api/notes/${id}`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    const note: Note = await res.json();
+    setNotes((ns) => ns.map((n) => (n.id === id ? note : n)));
+  }
+
+  function openCreate() {
+    setSelectedNote(null);
+    setIsDialogOpen(true);
+  }
+
+  function openEdit(note: Note) {
+    setSelectedNote(note);
+    setIsDialogOpen(true);
   }
 
   useEffect(() => {
@@ -82,7 +106,7 @@ export function App() {
 
           <div>
             <button
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => openCreate()}
               className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               New Note
@@ -95,14 +119,19 @@ export function App() {
         <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-6">
           <div className="flex">
             <button
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => openCreate()}
               className="m-auto h-full w-full justify-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               + New Note
             </button>
           </div>
           {notes.map((n: Note) => (
-            <NoteCard key={n.id} note={n} deleteNote={deleteNote} />
+            <NoteCard
+              key={n.id}
+              note={n}
+              deleteNote={deleteNote}
+              onEditClick={(note) => openEdit(note)}
+            />
           ))}
         </div>
       )}
@@ -113,7 +142,9 @@ export function App() {
       >
         <div className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Create Note</h2>
+            <h2 className="text-lg font-semibold">
+              {selectedNote ? "Edit Note" : "Create Note"}
+            </h2>
             <button
               onClick={() => setIsDialogOpen(false)}
               className="rounded px-2 py-1 text-sm text-slate-600 hover:bg-slate-100"
@@ -122,9 +153,16 @@ export function App() {
             </button>
           </div>
 
-          <AddNote
-            onCreate={async (n) => {
-              await createNote(n);
+          <NoteForm
+            initialTitle={selectedNote?.title ?? ""}
+            initialBody={selectedNote?.body ?? ""}
+            submitLabel={selectedNote ? "Save changes" : "Create"}
+            onSubmit={async ({ title, body }) => {
+              if (selectedNote) {
+                await editNote(selectedNote.id, { title, body });
+              } else {
+                await createNote({ title, body });
+              }
               setIsDialogOpen(false);
             }}
           />

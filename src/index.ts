@@ -1,7 +1,7 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { makeNote } from "./shared/note";
-import type { NewNote, Note } from "./shared/note";
+import type { EditNote, NewNote, Note } from "./shared/note";
 
 const server = serve({
   routes: {
@@ -24,7 +24,7 @@ const server = serve({
     // },
 
     "/api/notes": {
-      async POST(req) {
+      async POST(req: Bun.BunRequest) {
         const data: NewNote = await req.json();
         if (!data?.title || !data?.body) {
           return Response.json(
@@ -39,6 +39,26 @@ const server = serve({
     },
 
     "/api/notes/:id": {
+      async PUT(req) {
+        const id = req.params.id;
+        const data: EditNote = await req.json();
+
+        if (!data.title && !data.body) {
+          return Response.json(
+            { error: "title and body are required" },
+            { status: 400 },
+          );
+        }
+
+        const note: Note = {
+          id: id,
+          title: data.title,
+          body: data.body,
+          createdAt: new Date().toISOString(),
+        };
+        return Response.json(note, { status: 200 });
+      },
+
       async DELETE(req) {
         const id = req.params.id;
 

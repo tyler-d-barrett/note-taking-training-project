@@ -8,6 +8,11 @@ export interface Note extends NewNote {
   createdAt: string;
 }
 
+export type EditNote = {
+  title: string;
+  body: string;
+};
+
 export function makeNote(input: NewNote): Note {
   return {
     id: crypto.randomUUID(),
