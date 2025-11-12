@@ -3,7 +3,6 @@ import "./index.css";
 import { NoteCard } from "./NoteCard";
 import logo from "./logo.svg";
 import type { EditNote, NewNote, Note } from "./shared/note";
-import { saveNotes } from "./storage/notes";
 import { NoteForm } from "./NoteForm";
 
 export function App() {
@@ -90,10 +89,6 @@ export function App() {
       dlg.removeEventListener("cancel", onClose);
     };
   }, []);
-
-  useEffect(() => {
-    saveNotes(notes);
-  }, [notes]);
 
   return (
     <div>
