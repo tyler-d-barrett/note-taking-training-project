@@ -6,7 +6,7 @@ export function NoteCard({
   onEditClick,
 }: {
   note: Note;
-  deleteNote: (i: string) => Promise<void> | void;
+  deleteNote: (i: number) => Promise<void> | void;
   onEditClick: (note: Note) => void;
 }) {
   return (

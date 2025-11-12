@@ -7,10 +7,22 @@ import { loadNotes, saveNotes } from "./storage/notes";
 import { NoteForm } from "./NoteForm";
 
 export function App() {
-  const [notes, setNotes] = useState<Note[]>(() => loadNotes());
+  const [notes, setNotes] = useState<Note[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/notes", {
+        method: "GET",
+        headers: { "content-type": "application/json" },
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data: Note[] = await res.json();
+      setNotes(data);
+    })();
+  }, []);
 
   async function createNote(input: NewNote) {
     const res = await fetch("/api/notes", {
@@ -25,7 +37,7 @@ export function App() {
     setNotes((prev) => [note, ...prev]);
   }
 
-  async function deleteNote(id: String) {
+  async function deleteNote(id: number) {
     const res = await fetch(`/api/notes/${id}`, {
       method: "DELETE",
     });
@@ -35,7 +47,7 @@ export function App() {
     setNotes((prev) => prev.filter((n) => n.id !== id));
   }
 
-  async function editNote(id: string, payload: EditNote) {
+  async function editNote(id: number, payload: EditNote) {
     const res = await fetch(`/api/notes/${id}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },

@@ -4,8 +4,8 @@ export interface NewNote {
 }
 
 export interface Note extends NewNote {
-  id: string;
-  createdAt: string;
+  id: number;
+  createdAt: number;
 }
 
 export type EditNote = {
@@ -13,11 +13,11 @@ export type EditNote = {
   body: string;
 };
 
-export function makeNote(input: NewNote): Note {
-  return {
-    id: crypto.randomUUID(),
-    title: input.title.trim(),
-    body: input.body.trim(),
-    createdAt: new Date().toISOString(),
-  };
-}
+// export function makeNote(input: NewNote): Note {
+//   return {
+//     id: crypto.randomUUID(),
+//     title: input.title.trim(),
+//     body: input.body.trim(),
+//     createdAt: new Date().toISOString(),
+//   };
+// }

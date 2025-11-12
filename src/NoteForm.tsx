@@ -14,12 +14,6 @@ export function NoteForm({
   const [title, setTitle] = useState(initialTitle);
   const [body, setBody] = useState(initialBody);
 
-  // Reset when the dialog opens for a different note
-  useEffect(() => {
-    setTitle(initialTitle);
-    setBody(initialBody);
-  }, [initialTitle, initialBody]);
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onSubmit({ title, body });
