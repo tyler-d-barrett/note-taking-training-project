@@ -75,17 +75,15 @@ export function putNote(
   id: number,
   data: unknown,
 ): HttpResult<Note | { error: string }> {
-  const d = data as Partial<EditNote>;
-  if (!d?.title && !d?.body) {
-    return { status: 400, json: { error: "title and body are required" } };
+  const d = data as Partial<NewNote>;
+  if (!d?.title || !d?.body) {
+    return { status: 422, json: { error: "title and body are required" } };
   }
-  const note: Note = {
-    id,
-    title: d.title ?? "",
-    body: d.body ?? "",
-    createdAt: Date.now(),
-  };
-  return { status: 200, json: note };
+
+  const note = notesRepo.update({ id: id, title: d.title, body: d.body });
+
+  if (note) return { status: 200, json: note };
+  else return { status: 404, json: { error: "note does not exist" } };
 }
 
 export function deleteNote(
@@ -93,15 +91,12 @@ export function deleteNote(
 ): HttpResult<boolean | { error: string }> {
   const result = notesRepo.delete(id);
 
-  if (result) {
-    return { status: 204, json: true };
-  } else {
-    return { status: 404, json: { error: "id does not exist" } };
-  }
+  if (result) return { status: 204, json: true };
+  else return { status: 404, json: { error: "id does not exist" } };
 }
 
 export function getNotes(): HttpResult<Note[]> {
-  const notes: Note[] = notesRepo.list(50, 0);
+  const notes: Note[] = notesRepo.list({ limit: 5, offset: 0 });
 
   return { status: 200, json: notes };
 }

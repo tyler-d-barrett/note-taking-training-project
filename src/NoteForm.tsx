@@ -35,12 +35,14 @@ export function NoteForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="My Day"
         autoFocus
+        required
       />
       <textarea
         className="block h-28 w-full rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 focus:outline-none"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder="Start typing…"
+        required
       />
       <div className="mt-4 flex justify-end gap-2">
         <button

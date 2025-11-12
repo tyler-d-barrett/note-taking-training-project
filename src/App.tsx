@@ -3,7 +3,7 @@ import "./index.css";
 import { NoteCard } from "./NoteCard";
 import logo from "./logo.svg";
 import type { EditNote, NewNote, Note } from "./shared/note";
-import { loadNotes, saveNotes } from "./storage/notes";
+import { saveNotes } from "./storage/notes";
 import { NoteForm } from "./NoteForm";
 
 export function App() {

@@ -34,10 +34,10 @@ export function NoteCard({
         <p className="mt-1 mb-1 text-sm wrap-break-word text-slate-700">
           {note.body}
         </p>
-        <time className="mt-auto text-xs text-slate-500">
-          Created: {new Date(note.createdAt).toLocaleString()}
-        </time>
       </div>
+      <time className="mt-auto text-xs text-slate-500">
+        Created: {new Date(note.createdAt).toLocaleString()}
+      </time>
     </article>
   );
 }

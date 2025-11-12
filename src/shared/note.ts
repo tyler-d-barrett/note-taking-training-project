@@ -8,10 +8,10 @@ export interface Note extends NewNote {
   createdAt: number;
 }
 
-export type EditNote = {
+export interface EditNote {
   title: string;
   body: string;
-};
+}
 
 // export function makeNote(input: NewNote): Note {
 //   return {

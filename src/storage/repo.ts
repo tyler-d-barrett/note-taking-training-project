@@ -3,23 +3,36 @@ import type { Note } from "@/shared/note";
 
 export type NotesRepo = {
   create(input: { title: string; body: string }): Note;
-  list(limit?: number, offset?: number): Note[];
+  list(input: { limit: number; offset: number }): Note[];
+  update(input: { id: number; title: string; body: string }): Note | undefined;
   delete(id: number): boolean;
 };
 
 export function makeNotesRepo(conn: Database): NotesRepo {
-  const insert = conn.query(`
+  const insertQuery = conn.query(`
     INSERT INTO note (title, body, created_at)
     VALUES ($title, $body, $now)
   `);
+
+  const getByIdQuery = conn.query(`
+    SELECT id, title, body, created_at
+    FROM note
+    WHERE id = $id;
+    `);
 
   const listQuery = conn.query(`
     SELECT id, title, body, created_at
     FROM note
     ORDER BY created_at DESC
-    
+    LIMIT $limit OFFSET $offset
   `);
-  //LIMIT $limit OFFSET $offset
+
+  const updateQuery = conn.query(`
+    UPDATE note
+    SET title = $title
+    , body = $body
+    WHERE id = $id;
+    `);
 
   const deleteQuery = conn.query(`
     DELETE FROM note
@@ -38,15 +51,22 @@ export function makeNotesRepo(conn: Database): NotesRepo {
   return {
     create({ title, body }) {
       const now = Date.now();
-      insert.run({ title: title, body: body, now: now });
+      insertQuery.run({ title: title, body: body, now: now });
 
       const id = Number((lastId.get() as any).id);
       return { id, title, body, createdAt: now };
     },
 
-    list(limit = 50, offset = 0) {
-      const rows = listQuery.all({ $limit: limit, $offset: offset }) as Note[];
+    list({ limit, offset }) {
+      const rows = listQuery.all({ limit: limit, offset: offset }) as Note[];
       return rows.map(row);
+    },
+
+    update({ id, title, body }) {
+      updateQuery.run({ id: id, title: title, body: body });
+      const result = getByIdQuery.get(id);
+
+      return result ? row(result) : undefined;
     },
 
     delete(id) {
