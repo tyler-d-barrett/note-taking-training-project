@@ -4,6 +4,7 @@ import type { Note } from "@/shared/note";
 export type NotesRepo = {
   create(input: { title: string; body: string }): Note;
   list(limit?: number, offset?: number): Note[];
+  delete(id: number): boolean;
 };
 
 export function makeNotesRepo(conn: Database): NotesRepo {
@@ -12,13 +13,18 @@ export function makeNotesRepo(conn: Database): NotesRepo {
     VALUES ($title, $body, $now)
   `);
 
-  const listStmt = conn.query(`
+  const listQuery = conn.query(`
     SELECT id, title, body, created_at
     FROM note
     ORDER BY created_at DESC
     
   `);
   //LIMIT $limit OFFSET $offset
+
+  const deleteQuery = conn.query(`
+    DELETE FROM note
+    WHERE id = $id;
+    `);
 
   const lastId = conn.query(`SELECT last_insert_rowid() AS id`);
 
@@ -39,8 +45,13 @@ export function makeNotesRepo(conn: Database): NotesRepo {
     },
 
     list(limit = 50, offset = 0) {
-      const rows = listStmt.all({ $limit: limit, $offset: offset }) as Note[];
+      const rows = listQuery.all({ $limit: limit, $offset: offset }) as Note[];
       return rows.map(row);
+    },
+
+    delete(id) {
+      const count = deleteQuery.run(id) as { changes?: number };
+      return (count?.changes ?? 0) > 0;
     },
   };
 }

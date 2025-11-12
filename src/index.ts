@@ -37,9 +37,12 @@ export const server = serve({
       },
 
       async DELETE(req) {
-        const id = req.params.id;
+        const id = Number(req.params.id);
+        if (!Number.isSafeInteger(id)) {
+          return Response.json({ status: 400, json: { error: "invalid id" } });
+        }
         const res = deleteNote(id);
-        return new Response(null, { status: res.status });
+        return Response.json(res.json ?? null, { status: res.status });
       },
     },
   },
@@ -85,8 +88,16 @@ export function putNote(
   return { status: 200, json: note };
 }
 
-export function deleteNote(id: string): HttpResult<void> {
-  return { status: 204 };
+export function deleteNote(
+  id: number,
+): HttpResult<boolean | { error: string }> {
+  const result = notesRepo.delete(id);
+
+  if (result) {
+    return { status: 204, json: true };
+  } else {
+    return { status: 404, json: { error: "id does not exist" } };
+  }
 }
 
 export function getNotes(): HttpResult<Note[]> {

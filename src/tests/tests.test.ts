@@ -41,7 +41,7 @@ describe("putNote", () => {
 
 describe("deleteNote", () => {
   it("204", () => {
-    const res = deleteNote("xyz");
+    const res = deleteNote(123);
     expect(res.status).toBe(204);
   });
 });
