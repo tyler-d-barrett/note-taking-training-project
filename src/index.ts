@@ -21,7 +21,12 @@ export const server = serve({
       },
 
       async GET(req) {
-        const res = getNotes();
+        const url = new URL(req.url);
+
+        const limit = Number(url.searchParams.get("limit")) || 10;
+        const offset = Number(url.searchParams.get("offset")) || 0;
+
+        const res = getNotes(limit, offset);
         return Response.json(res.json ?? null, { status: res.status });
       },
     },
@@ -95,8 +100,8 @@ export function makeHandlers(repo: NotesRepo) {
     else return { status: 404, json: { error: "id does not exist" } };
   }
 
-  function getNotes(): HttpResult<Note[]> {
-    const notes: Note[] = repo.list({ limit: 5, offset: 0 });
+  function getNotes(limit: number, offset: number): HttpResult<Note[]> {
+    const notes: Note[] = repo.list({ limit: limit, offset: offset });
     return { status: 200, json: notes };
   }
 

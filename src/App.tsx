@@ -11,16 +11,39 @@ export function App() {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/notes", {
-        method: "GET",
-        headers: { "content-type": "application/json" },
-      });
+  const fetchMoreNotes = async () => {
+    try {
+      const currentCount = notes.length;
+
+      const res = await fetch(`/api/notes?limit=10&offset=${currentCount}`);
       if (!res.ok) throw new Error(await res.text());
+
       const data: Note[] = await res.json();
-      setNotes(data);
-    })();
+
+      setNotes((prev) => [...prev, ...data]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    let mounted = false;
+
+    const fetchInitialData = async () => {
+      const res = await fetch(`/api/notes?limit=10&offset=0`);
+      const data = await res.json();
+
+      if (!mounted) {
+        setNotes(data);
+      }
+    };
+
+    fetchInitialData();
+
+    return () => {
+      mounted = true;
+    };
   }, []);
 
   async function createNote(input: NewNote) {
@@ -127,9 +150,45 @@ export function App() {
           <div className="flex">
             <button
               onClick={() => openCreate()}
-              className="m-auto h-full w-full justify-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              className="m-auto flex w-full items-center justify-center rounded bg-green-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg active:scale-95"
             >
-              + New Note
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="mr-2 h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              New Note
+            </button>
+          </div>
+          <div className="flex">
+            <button
+              onClick={() => fetchMoreNotes()}
+              className="m-auto flex w-full items-center justify-center rounded bg-blue-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="mr-2 h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+              Load More
             </button>
           </div>
           {notes.map((n: Note) => (

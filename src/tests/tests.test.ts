@@ -49,7 +49,7 @@ describe("postNote", () => {
     expect(note.body).toBe("World");
 
     // and it really hit the DB
-    const list = ctx.getNotes();
+    const list = ctx.getNotes(10, 0);
     expect(list.status).toBe(200);
     expect(list.json!.length).toBe(1);
   });
@@ -89,14 +89,14 @@ describe("deleteNote", () => {
     const res = ctx.deleteNote(created.id);
     expect(res.status).toBe(204);
 
-    const list = ctx.getNotes();
+    const list = ctx.getNotes(10, 0);
     expect(list.json!.length).toBe(0);
   });
 });
 
 describe("getNotes", () => {
   test("returns empty array initially", () => {
-    const res = ctx.getNotes();
+    const res = ctx.getNotes(10, 0);
     expect(res.status).toBe(200);
     expect(res.json).toEqual([]);
   });
@@ -105,7 +105,7 @@ describe("getNotes", () => {
     ctx.postNote({ title: "a", body: "1" });
     ctx.postNote({ title: "b", body: "2" });
 
-    const res = ctx.getNotes();
+    const res = ctx.getNotes(10, 0);
     expect(res.status).toBe(200);
     expect(res.json!.length).toBe(2);
   });
