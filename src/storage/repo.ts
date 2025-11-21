@@ -3,7 +3,10 @@ import type { Note } from "@/shared/note";
 
 export type NotesRepo = {
   create(input: { title: string; body: string }): Note;
-  list(input: { limit: number; offset: number }): Note[];
+  list(input: { limit: number; offset: number }): {
+    notes: Note[];
+    hasMore: boolean;
+  };
   update(input: { id: number; title: string; body: string }): Note | undefined;
   delete(id: number): boolean;
 };
@@ -58,8 +61,15 @@ export function makeNotesRepo(conn: Database): NotesRepo {
     },
 
     list({ limit, offset }) {
-      const rows = listQuery.all({ limit: limit, offset: offset }) as Note[];
-      return rows.map(row);
+      const queryLimit = limit + 1;
+      const rows = listQuery.all({
+        limit: queryLimit,
+        offset: offset,
+      }) as Note[];
+
+      const hasMore = rows.length == queryLimit;
+
+      return { notes: rows.slice(0, limit).map(row), hasMore: hasMore };
     },
 
     update({ id, title, body }) {

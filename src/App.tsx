@@ -7,6 +7,7 @@ import { NoteForm } from "./NoteForm";
 
 export function App() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [hasMoreNotes, setHasMoreNotes] = useState<boolean>(true);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -18,9 +19,10 @@ export function App() {
       const res = await fetch(`/api/notes?limit=10&offset=${currentCount}`);
       if (!res.ok) throw new Error(await res.text());
 
-      const data: Note[] = await res.json();
+      const data: { notes: Note[]; hasMore: boolean } = await res.json();
 
-      setNotes((prev) => [...prev, ...data]);
+      setNotes((prev) => [...prev, ...data.notes]);
+      setHasMoreNotes(data.hasMore);
     } catch (error) {
       console.error(error);
     } finally {
@@ -35,7 +37,8 @@ export function App() {
       const data = await res.json();
 
       if (!mounted) {
-        setNotes(data);
+        setNotes(data.notes);
+        setHasMoreNotes(data.hasMore);
       }
     };
 
@@ -146,11 +149,11 @@ export function App() {
       )}
 
       {notes.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-6">
-          <div className="flex">
+        <div className="mt-4 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+          <div>
             <button
               onClick={() => openCreate()}
-              className="m-auto flex w-full items-center justify-center rounded bg-green-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg active:scale-95"
+              className="m-auto flex w-full items-center justify-center rounded bg-green-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg active:scale-95 sm:w-auto md:w-56"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -169,10 +172,11 @@ export function App() {
               New Note
             </button>
           </div>
-          <div className="flex">
+          <div>
             <button
               onClick={() => fetchMoreNotes()}
-              className="m-auto flex w-full items-center justify-center rounded bg-blue-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!hasMoreNotes}
+              className="m-auto flex w-full items-center justify-center rounded bg-blue-600 px-4 py-3 text-lg font-bold text-white shadow-md transition-all duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto md:w-56"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -191,16 +195,19 @@ export function App() {
               Load More
             </button>
           </div>
-          {notes.map((n: Note) => (
-            <NoteCard
-              key={n.id}
-              note={n}
-              deleteNote={deleteNote}
-              onEditClick={(note) => openEdit(note)}
-            />
-          ))}
         </div>
       )}
+
+      <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-5">
+        {notes.map((n: Note) => (
+          <NoteCard
+            key={n.id}
+            note={n}
+            deleteNote={deleteNote}
+            onEditClick={(note) => openEdit(note)}
+          />
+        ))}
+      </div>
 
       <dialog
         ref={dialogRef}
