@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Note } from "./shared/note";
+import type { Note } from "../shared/note";
 
 export function NoteCard({
   note,
