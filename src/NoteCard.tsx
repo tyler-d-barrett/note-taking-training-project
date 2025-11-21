@@ -1,4 +1,5 @@
-import type { Note, EditNote } from "./shared/note";
+import { useState } from "react";
+import type { Note } from "./shared/note";
 
 export function NoteCard({
   note,
@@ -9,6 +10,43 @@ export function NoteCard({
   deleteNote: (i: number) => Promise<void> | void;
   onEditClick: (note: Note) => void;
 }) {
+  const [isPendingDelete, setIsPendingDelete] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    await deleteNote(note.id);
+  };
+
+  if (isPendingDelete) {
+    return (
+      <article className="group relative flex min-h-48 max-w-sm flex-col items-center justify-center rounded border border-red-500 bg-red-50 p-4 shadow-lg">
+        <h2 className="text-xl font-bold text-red-700">Confirm Deletion</h2>
+        <p className="mt-2 text-center text-sm text-red-600">
+          Are you sure you want to delete this note? This action cannot be
+          undone.
+        </p>
+
+        <div className="mt-6 flex gap-4">
+          <button
+            onClick={() => setIsPendingDelete(false)} // Cancel button
+            className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition duration-150 hover:bg-gray-100"
+            disabled={isDeleting}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete} // Confirm delete
+            className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition duration-150 hover:bg-red-700"
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article className="group relative flex min-h-48 max-w-sm flex-col rounded border bg-white p-4 shadow-sm">
       <div className="absolute top-2 right-2 z-10 flex gap-2">
@@ -20,8 +58,9 @@ export function NoteCard({
             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
           </svg>
         </button>
+
         <button
-          onClick={() => deleteNote(note.id)}
+          onClick={() => setIsPendingDelete(true)}
           className="scale-95 rounded-full bg-white/95 p-1.5 text-red-600 opacity-0 shadow ring-1 ring-black/10 contrast-125 saturate-125 transition duration-300 group-hover:scale-100 group-hover:opacity-100"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -29,12 +68,14 @@ export function NoteCard({
           </svg>
         </button>
       </div>
+
       <div className="transition duration-150 group-hover:blur-[1.5px] group-hover:brightness-75">
         <h2 className="text-lg font-semibold text-slate-500">{note.title}</h2>
         <p className="mt-1 mb-1 text-sm wrap-break-word text-slate-700">
           {note.body}
         </p>
       </div>
+
       <time className="mt-auto text-xs text-slate-500">
         Created: {new Date(note.createdAt).toLocaleString()}
       </time>
