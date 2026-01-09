@@ -3,6 +3,7 @@ import index from "./index.html";
 import { db } from "./storage/db";
 import { makeNotesRepo } from "./storage/repo";
 import { dbHandlers } from "./storage/dbHandlers";
+import { seedDatabase } from "./storage/seed";
 
 const notesRepo = makeNotesRepo(db);
 const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
@@ -62,4 +63,14 @@ export const server = serve({
   },
 });
 
+const accountCount = db
+  .query("SELECT COUNT(*) as count FROM account")
+  .get() as {
+  count: number;
+};
+
+if (accountCount.count === 0) {
+  console.log("No accounts found. Running seed data...");
+  seedDatabase();
+}
 console.log(`🚀 Server running at ${server.url}`);
