@@ -1,7 +1,6 @@
 import type { Note, NewNote, EditNote } from "../shared/note";
 import type { NotesRepo } from "./notesRepo";
-
-export type HttpResult<T = unknown> = { status: number; json?: T };
+import type { HttpResult } from "@/shared/httpResult";
 
 export function dbHandlers(repo: NotesRepo) {
   function postNote(data: unknown): HttpResult<Note | { error: string }> {

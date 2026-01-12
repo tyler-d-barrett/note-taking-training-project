@@ -4,9 +4,14 @@ import { db } from "./storage/db";
 import { makeNotesRepo } from "./storage/notesRepo";
 import { dbHandlers } from "./storage/notesDbHandler";
 import { seedDatabase } from "./storage/seed";
+import { makeAccountRepo } from "./storage/accountRepo";
+import { authHandlers } from "./storage/accountHandlers";
 
 const notesRepo = makeNotesRepo(db);
+const accountRepo = makeAccountRepo(db);
+
 const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
+const authApi = authHandlers(accountRepo);
 
 export const server = serve({
   routes: {
