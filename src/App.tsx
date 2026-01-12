@@ -6,6 +6,7 @@ import type { Note } from "./shared/note";
 import { NoteControls } from "./components/NoteControls";
 import { useNotes } from "./hooks/useNotes";
 import { NoteModal } from "./components/NoteModal";
+import { AuthForm } from "./components/AuthForm.tsx";
 
 export function App() {
   const {
@@ -18,6 +19,22 @@ export function App() {
     deleteNote,
     editNote,
   } = useNotes();
+
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token"),
+  );
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+
+  // Logic to handle successful login
+  const handleAuthSuccess = (newToken: string) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -54,18 +71,40 @@ export function App() {
     };
   }, []);
 
+  // If not authenticated, show the login/register screen
+  if (!token) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <AuthForm
+          mode={authMode}
+          setMode={setAuthMode}
+          onSuccess={handleAuthSuccess}
+        />
+      </div>
+    );
+  }
+
   return (
     <div>
-      <nav className="flex bg-gray-900">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4">
-          <a href="#" className="flex items-center space-x-3">
-            <img src={logo} className="h-8" alt="HelloNoto Logo" />
-            <span className="self-center text-2xl font-semibold text-white">
-              HelloNoto
-            </span>
-          </a>
-        </div>
-      </nav>
+      <div>
+        <nav className="flex bg-gray-900">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">
+            <div className="flex items-center space-x-3">
+              <img src={logo} className="h-8" alt="Logo" />
+              <span className="text-2xl font-semibold text-white">
+                HelloNoto
+              </span>
+            </div>
+            <button
+              onClick={logout}
+              className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
+        </nav>
+        {/* Rest of your existing Notes UI */}
+      </div>
 
       <NoteControls
         notesLength={notes.length}
