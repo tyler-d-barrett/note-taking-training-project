@@ -1,5 +1,5 @@
 import type { Note, NewNote, EditNote } from "../shared/note";
-import type { NotesRepo } from "./repo";
+import type { NotesRepo } from "./notesRepo";
 
 export type HttpResult<T = unknown> = { status: number; json?: T };
 

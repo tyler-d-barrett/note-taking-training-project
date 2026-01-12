@@ -1,8 +1,8 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { db } from "./storage/db";
-import { makeNotesRepo } from "./storage/repo";
-import { dbHandlers } from "./storage/dbHandlers";
+import { makeNotesRepo } from "./storage/notesRepo";
+import { dbHandlers } from "./storage/notesDbHandler";
 import { seedDatabase } from "./storage/seed";
 
 const notesRepo = makeNotesRepo(db);

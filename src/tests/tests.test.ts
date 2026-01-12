@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite";
-import { makeNotesRepo } from "@/storage/repo";
-import { dbHandlers } from "@/storage/dbHandlers";
+import { makeNotesRepo } from "@/storage/notesRepo";
+import { dbHandlers } from "@/storage/notesDbHandler";
 import { beforeEach, describe, expect, test } from "bun:test";
 import type { NewNote, Note } from "@/shared/note";
 import { ensureSchema } from "@/storage/db";
