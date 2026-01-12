@@ -7,12 +7,16 @@ import { seedDatabase } from "./storage/seed";
 import { makeAccountRepo } from "./storage/accountRepo";
 import { authHandlers } from "./storage/accountHandlers";
 import { verifyToken } from "./shared/utils";
+import { makeTaskRepo } from "./storage/taskRepo";
+import { makeTaskHandlers } from "./storage/taskHandlers";
 
 const notesRepo = makeNotesRepo(db);
+const taskRepo = makeTaskRepo(db);
 const accountRepo = makeAccountRepo(db);
 
 const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
 const authApi = authHandlers(accountRepo);
+const taskApi = makeTaskHandlers(taskRepo);
 
 function getAuthenticatedId(req: Request): number | null {
   const authHeader = req.headers.get("Authorization");
@@ -48,6 +52,54 @@ export const server = serve({
         const data = await req.json().catch(() => ({}));
         const res = await authApi.login(data);
         return Response.json(res.json ?? null, { status: res.status });
+      },
+    },
+
+    "/api/tasks": {
+      async GET(req) {
+        const accountId = getAuthenticatedId(req);
+        if (accountId === null)
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+        const url = new URL(req.url);
+        const limit = Number(url.searchParams.get("limit")) || 10;
+        const offset = Number(url.searchParams.get("offset")) || 0;
+
+        const res = taskApi.getTasks(accountId, limit, offset);
+        return Response.json(res.json, { status: res.status });
+      },
+
+      async POST(req) {
+        const accountId = getAuthenticatedId(req);
+        if (accountId === null)
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+        const data = await req.json().catch(() => ({}));
+        const res = taskApi.postTask(accountId, data);
+        return Response.json(res.json, { status: res.status });
+      },
+    },
+
+    "/api/tasks/:id": {
+      async PUT(req) {
+        const accountId = getAuthenticatedId(req);
+        const id = Number(req.params.id);
+        if (accountId === null)
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+        const data = await req.json().catch(() => ({}));
+        const res = taskApi.putTask(accountId, id, data);
+        return Response.json(res.json, { status: res.status });
+      },
+
+      async DELETE(req) {
+        const accountId = getAuthenticatedId(req);
+        const id = Number(req.params.id);
+        if (accountId === null)
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+        const res = taskApi.deleteTask(accountId, id);
+        return Response.json(res.json, { status: res.status });
       },
     },
 
