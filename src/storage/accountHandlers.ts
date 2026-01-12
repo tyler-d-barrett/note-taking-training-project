@@ -1,10 +1,11 @@
 import type { AccountRepo } from "./accountRepo.ts";
 import type { HttpResult } from "@/shared/httpResult.ts";
+import { createToken } from "@/shared/utils.ts";
 
 export function authHandlers(repo: AccountRepo) {
   async function register(
     data: any,
-  ): Promise<HttpResult<{ id: number } | { error: string }>> {
+  ): Promise<HttpResult<{ token: string; id: number } | { error: string }>> {
     const { email, password } = data;
 
     if (!email || !password || password.length < 8) {
@@ -18,7 +19,9 @@ export function authHandlers(repo: AccountRepo) {
       const hash = await Bun.password.hash(password);
       const id = repo.create(email, hash);
 
-      return { status: 201, json: { id } };
+      const token = createToken(id);
+
+      return { status: 201, json: { token, id } };
     } catch (e) {
       return { status: 409, json: { error: "User already exists" } };
     }
@@ -48,7 +51,7 @@ export function authHandlers(repo: AccountRepo) {
       return { status: 401, json: { error: "Invalid credentials" } };
     }
 
-    const token = "mock_jwt_token_for_now";
+    const token = createToken(user.id);
 
     return { status: 200, json: { token } };
   }

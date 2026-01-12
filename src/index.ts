@@ -6,6 +6,7 @@ import { dbHandlers } from "./storage/notesDbHandler";
 import { seedDatabase } from "./storage/seed";
 import { makeAccountRepo } from "./storage/accountRepo";
 import { authHandlers } from "./storage/accountHandlers";
+import { verifyToken } from "./shared/utils";
 
 const notesRepo = makeNotesRepo(db);
 const accountRepo = makeAccountRepo(db);
@@ -13,10 +14,42 @@ const accountRepo = makeAccountRepo(db);
 const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
 const authApi = authHandlers(accountRepo);
 
+function getAuthenticatedId(req: Request): number | null {
+  const authHeader = req.headers.get("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return null;
+  }
+
+  return verifyToken(token);
+}
+
 export const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
+
+    "/api/register": {
+      async POST(req) {
+        const data = await req.json().catch(() => ({}));
+        const res = await authApi.register(data);
+        return Response.json(res.json ?? null, { status: res.status });
+      },
+    },
+
+    "/api/login": {
+      async POST(req) {
+        const data = await req.json().catch(() => ({}));
+        const res = await authApi.login(data);
+        return Response.json(res.json ?? null, { status: res.status });
+      },
+    },
 
     "/api/notes": {
       async POST(req: Bun.BunRequest) {
