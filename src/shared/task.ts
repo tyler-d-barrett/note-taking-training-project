@@ -32,7 +32,12 @@ export type NewTask = {
   dueDate?: number;
 };
 
-export type EditTask = Partial<NewTask> & {
+export interface EditTask {
   id: number;
+  title?: string;
+  description?: string;
+  priority?: number;
+  tags?: string;
   completed?: boolean;
-};
+  dueDate?: number;
+}

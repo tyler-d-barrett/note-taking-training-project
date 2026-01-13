@@ -1,34 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 import "./index.css";
-import { NoteCard } from "./components/NoteCard";
 import logo from "./logo.svg";
-import type { Note } from "./shared/note";
-import { NoteControls } from "./components/NoteControls";
-import { useNotes } from "./hooks/useNotes";
-import { NoteModal } from "./components/NoteModal";
+import type { Task } from "./shared/task";
 import { AuthForm } from "./components/AuthForm.tsx";
+
+// New Task Components
+import { TaskCard } from "./components/TaskCard";
+import { TaskControls } from "./components/TaskControls";
+import { TaskModal } from "./components/TaskModal";
+import { useTasks } from "./hooks/useTasks";
 
 export function App() {
   const {
-    notes,
-    hasMoreNotes,
+    tasks,
+    hasMoreTasks,
     isInitialLoading,
     isLoadingMore,
-    fetchMoreNotes,
-    createNote,
-    deleteNote,
-    editNote,
-  } = useNotes();
+    fetchMoreTasks,
+    createTask,
+    deleteTask,
+    editTask,
+  } = useTasks();
 
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
-  // Logic to handle successful login
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
+    // Reload to ensure the useTasks hook picks up the new token
+    window.location.reload();
   };
 
   const logout = () => {
@@ -37,30 +40,35 @@ export function App() {
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   function openCreate() {
-    setSelectedNote(null);
+    setSelectedTask(null);
     setIsDialogOpen(true);
   }
 
-  function openEdit(note: Note) {
-    setSelectedNote(note);
+  function openEdit(task: Task) {
+    setSelectedTask(task);
     setIsDialogOpen(true);
   }
 
+  // Helper for checking/unchecking tasks
+  const toggleComplete = async (task: Task) => {
+    await editTask(task.id, { id: task.id, completed: !task.completed });
+  };
+
+  // Dialog visibility logic
   useEffect(() => {
-    const dialog = dialogRef.current!;
+    const dialog = dialogRef.current;
     if (!dialog) return;
-
     if (isDialogOpen && !dialog.open) dialog.showModal();
-
     if (!isDialogOpen && dialog.open) dialog.close();
   }, [isDialogOpen]);
 
+  // Dialog event listeners
   useEffect(() => {
-    const dlg = dialogRef.current!;
+    const dlg = dialogRef.current;
     if (!dlg) return;
     const onClose = () => setIsDialogOpen(false);
     dlg.addEventListener("close", onClose);
@@ -71,7 +79,6 @@ export function App() {
     };
   }, []);
 
-  // If not authenticated, show the login/register screen
   if (!token) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -85,54 +92,54 @@ export function App() {
   }
 
   return (
-    <div>
-      <div>
-        <nav className="flex bg-gray-900">
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">
-            <div className="flex items-center space-x-3">
-              <img src={logo} className="h-8" alt="Logo" />
-              <span className="text-2xl font-semibold text-white">
-                HelloNoto
-              </span>
-            </div>
-            <button
-              onClick={logout}
-              className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            >
-              Logout
-            </button>
+    <div className="min-h-screen bg-slate-50">
+      <nav className="flex bg-gray-900 shadow-lg">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">
+          <div className="flex items-center space-x-3">
+            <img src={logo} className="h-8" alt="Logo" />
+            <span className="text-2xl font-semibold tracking-tight text-white">
+              HelloTask
+            </span>
           </div>
-        </nav>
-        {/* Rest of your existing Notes UI */}
-      </div>
+          <button
+            onClick={logout}
+            className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
 
-      <NoteControls
-        notesLength={notes.length}
-        hasMoreNotes={hasMoreNotes}
-        isInitialLoading={isInitialLoading}
-        isLoadingMore={isLoadingMore}
-        openCreate={openCreate}
-        fetchMoreNotes={fetchMoreNotes}
-      />
+      <main className="mx-auto max-w-7xl">
+        <TaskControls
+          tasksLength={tasks.length}
+          hasMoreTasks={hasMoreTasks}
+          isInitialLoading={isInitialLoading}
+          isLoadingMore={isLoadingMore}
+          openCreate={openCreate}
+          fetchMoreTasks={fetchMoreTasks}
+        />
 
-      <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-5">
-        {notes.map((n: Note) => (
-          <NoteCard
-            key={n.id}
-            note={n}
-            deleteNote={deleteNote}
-            onEditClick={openEdit}
-          />
-        ))}
-      </div>
+        <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {tasks.map((t: Task) => (
+            <TaskCard
+              key={t.id}
+              task={t}
+              deleteTask={deleteTask}
+              onEditClick={openEdit}
+              toggleComplete={toggleComplete}
+            />
+          ))}
+        </div>
+      </main>
 
-      <NoteModal
+      <TaskModal
         dialogRef={dialogRef}
-        selectedNote={selectedNote}
+        selectedTask={selectedTask}
         setIsDialogOpen={setIsDialogOpen}
-        setSelectedNote={setSelectedNote}
-        createNote={createNote}
-        editNote={editNote}
+        setSelectedTask={setSelectedTask}
+        createTask={createTask}
+        editTask={editTask}
       />
     </div>
   );
