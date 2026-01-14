@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import type { EditTask, Task, NewTask } from "@/shared/task";
 
 export function useTasks() {
@@ -7,22 +7,21 @@ export function useTasks() {
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
-  const headers = useMemo(
-    () => ({
-      "content-type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    }),
-    [],
-  );
+  const headers = () => ({
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  });
 
-  //TODO retrieve token inside fetch call instead of memoizing it, make sure it's current.
   useEffect(() => {
     let mounted = true;
 
     const fetchInitialData = async () => {
+      if (!localStorage.getItem("token")) return;
       setIsInitialLoading(true);
       try {
-        const res = await fetch(`/api/tasks?limit=10&offset=0`, { headers });
+        const res = await fetch(`/api/tasks?limit=10&offset=0`, {
+          headers: headers(),
+        });
         if (!res.ok) throw new Error("Auth failed or server error");
 
         const data: { tasks: Task[]; hasMore: boolean } = await res.json();
@@ -43,14 +42,14 @@ export function useTasks() {
     return () => {
       mounted = false;
     };
-  }, [headers]);
+  }, []);
 
   const fetchMoreTasks = async () => {
     setIsLoadingMore(true);
     try {
       const currentCount = tasks.length;
       const res = await fetch(`/api/tasks?limit=10&offset=${currentCount}`, {
-        headers,
+        headers: headers(),
       });
 
       if (!res.ok) throw new Error(await res.text());
@@ -69,7 +68,7 @@ export function useTasks() {
   async function createTask(input: NewTask) {
     const res = await fetch("/api/tasks", {
       method: "POST",
-      headers,
+      headers: headers(),
       body: JSON.stringify(input),
     });
 
@@ -82,7 +81,7 @@ export function useTasks() {
   async function deleteTask(id: number) {
     const res = await fetch(`/api/tasks/${id}`, {
       method: "DELETE",
-      headers,
+      headers: headers(),
     });
 
     if (!res.ok) throw new Error("Delete failed");
@@ -93,7 +92,7 @@ export function useTasks() {
   async function editTask(id: number, payload: EditTask) {
     const res = await fetch(`/api/tasks/${id}`, {
       method: "PUT",
-      headers,
+      headers: headers(),
       body: JSON.stringify({ payload }),
     });
 

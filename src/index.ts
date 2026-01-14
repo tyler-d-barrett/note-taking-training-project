@@ -6,7 +6,7 @@ import { dbHandlers } from "./storage/notesDbHandler";
 import { seedDatabase } from "./storage/seed";
 import { makeAccountRepo } from "./storage/accountRepo";
 import { authHandlers } from "./storage/accountHandlers";
-import { verifyToken } from "./shared/utils";
+import { getAuthenticatedId } from "./shared/utils";
 import { makeTaskRepo } from "./storage/taskRepo";
 import { makeTaskHandlers } from "./storage/taskHandlers";
 
@@ -17,22 +17,6 @@ const accountRepo = makeAccountRepo(db);
 const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
 const authApi = authHandlers(accountRepo);
 const taskApi = makeTaskHandlers(taskRepo);
-
-function getAuthenticatedId(req: Request): number | null {
-  const authHeader = req.headers.get("Authorization");
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return null;
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  if (!token) {
-    return null;
-  }
-
-  return verifyToken(token);
-}
 
 export const server = serve({
   routes: {
@@ -58,13 +42,13 @@ export const server = serve({
     "/api/tasks": {
       async GET(req) {
         const accountId = getAuthenticatedId(req);
+
         if (accountId === null)
           return Response.json({ error: "Unauthorized" }, { status: 401 });
 
         const url = new URL(req.url);
         const limit = Number(url.searchParams.get("limit")) || 10;
         const offset = Number(url.searchParams.get("offset")) || 0;
-
         const res = taskApi.getTasks(accountId, limit, offset);
         return Response.json(res.json, { status: res.status });
       },

@@ -25,3 +25,19 @@ export function verifyToken(token: string): number | null {
 
   return null;
 }
+
+export function getAuthenticatedId(req: Request): number | null {
+  const authHeader = req.headers.get("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return null;
+  }
+
+  return verifyToken(token);
+}

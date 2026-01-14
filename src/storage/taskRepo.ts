@@ -24,7 +24,7 @@ export function makeTaskRepo(conn: Database): TaskRepo {
 
   const listQuery = conn.query(`
     SELECT * FROM task 
-    WHERE account_id = $accountId 
+    WHERE account_id = $accountId
     ORDER BY created_at DESC 
     LIMIT $limit OFFSET $offset
   `);
@@ -64,12 +64,12 @@ export function makeTaskRepo(conn: Database): TaskRepo {
   return {
     create(accountId, task) {
       const result = insertQuery.get({
-        $accountId: accountId,
-        $title: task.title,
-        $description: task.description ?? null,
-        $priority: task.priority ?? 0,
-        $tags: task.tags ?? "",
-        $dueDate: task.dueDate ?? null,
+        accountId: accountId,
+        title: task.title,
+        description: task.description ?? null,
+        priority: task.priority ?? 0,
+        tags: task.tags ?? "",
+        dueDate: task.dueDate ?? null,
       }) as TaskRow;
 
       return mapRow(result);
@@ -78,9 +78,9 @@ export function makeTaskRepo(conn: Database): TaskRepo {
     list(accountId, { limit, offset }) {
       const queryLimit = limit + 1;
       const rows = listQuery.all({
-        $accountId: accountId,
-        $limit: queryLimit,
-        $offset: offset,
+        accountId: accountId,
+        limit: queryLimit,
+        offset: offset,
       }) as TaskRow[];
 
       const hasMore = rows.length === queryLimit;
@@ -91,22 +91,22 @@ export function makeTaskRepo(conn: Database): TaskRepo {
 
     update(accountId, input) {
       const result = updateQuery.get({
-        $id: input.id,
-        $accountId: accountId,
-        $title: input.title ?? null,
-        $description: input.description ?? null,
-        $completed:
+        id: input.id,
+        accountId: accountId,
+        title: input.title ?? null,
+        description: input.description ?? null,
+        completed:
           input.completed !== undefined ? (input.completed ? 1 : 0) : null,
-        $priority: input.priority ?? null,
-        $tags: input.tags ?? null,
-        $dueDate: input.dueDate ?? null,
+        priority: input.priority ?? null,
+        tags: input.tags ?? null,
+        dueDate: input.dueDate ?? null,
       }) as TaskRow | null;
 
       return result ? mapRow(result) : undefined;
     },
 
     delete(accountId, id) {
-      const result = deleteQuery.run({ $id: id, $accountId: accountId });
+      const result = deleteQuery.run({ id: id, accountId: accountId });
       return result.changes > 0;
     },
   };

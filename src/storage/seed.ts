@@ -2,7 +2,7 @@ import { db } from "./db";
 
 export function seedDatabase() {
   db.run(`INSERT OR IGNORE INTO account (id, email, password_hash) 
-          VALUES (1, 'test@example.com', 'placeholder_hash')`);
+          VALUES (1, 'test@example.com', '$argon2id$v=19$m=65536,t=2,p=1$IMKF33v43Kmn/D41vq4dTBXELSRrcnj5yFqCsQm8atk$IC/YxD79beGJnDsRgTVqlpoXKtSkNEB0M9hZ9K9i5V4')`);
 
   const insertTask = db.prepare(`
     INSERT INTO task (account_id, title, description, completed, priority, tags)
