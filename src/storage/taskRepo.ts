@@ -31,16 +31,16 @@ export function makeTaskRepo(conn: Database): TaskRepo {
 
   const updateQuery = conn.query(`
     UPDATE task 
-    SET title = COALESCE($title, title),
-        description = COALESCE($description, description),
-        completed = COALESCE($completed, completed),
-        priority = COALESCE($priority, priority),
-        tags = COALESCE($tags, tags),
-        due_date = COALESCE($dueDate, due_date),
+    SET title = $title,
+        description = $description,
+        completed = $completed,
+        priority = $priority,
+        tags = $tags,
+        due_date = $dueDate,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = $id AND account_id = $accountId
     RETURNING *;
-  `);
+`);
 
   const deleteQuery = conn.query(`
     DELETE FROM task 
@@ -90,15 +90,15 @@ export function makeTaskRepo(conn: Database): TaskRepo {
     },
 
     update(accountId, input) {
+      console.log(input);
       const result = updateQuery.get({
         id: input.id,
         accountId: accountId,
-        title: input.title ?? null,
+        title: input.title,
         description: input.description ?? null,
-        completed:
-          input.completed !== undefined ? (input.completed ? 1 : 0) : null,
-        priority: input.priority ?? null,
-        tags: input.tags ?? null,
+        completed: input.completed ? 1 : 0,
+        priority: input.priority,
+        tags: input.tags,
         dueDate: input.dueDate ?? null,
       }) as TaskRow | null;
 

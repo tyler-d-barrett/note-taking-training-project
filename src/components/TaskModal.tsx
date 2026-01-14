@@ -21,13 +21,20 @@ export function TaskModal({
 }: TaskModalProps) {
   const handleSubmit = async (data: NewTask) => {
     if (selectedTask) {
-      const updatePayload: EditTask = {
-        ...data,
+      const fullPayload: EditTask = {
         id: selectedTask.id,
+        title: data.title,
+        description: data.description,
+        priority: data.priority ?? selectedTask.priority,
+        tags:
+          typeof data.tags === "string"
+            ? data.tags
+            : selectedTask.tags.join(","),
         completed: selectedTask.completed,
+        dueDate: data.dueDate ?? selectedTask.dueDate,
       };
 
-      await editTask(selectedTask.id, updatePayload);
+      await editTask(selectedTask.id, fullPayload);
     } else {
       await createTask(data);
     }

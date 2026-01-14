@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./index.css";
 import logo from "./logo.svg";
-import type { Task } from "./shared/task";
+import type { Task, EditTask } from "./shared/task";
 import { AuthForm } from "./components/AuthForm.tsx";
 
 // New Task Components
@@ -55,7 +55,17 @@ export function App() {
 
   // Helper for checking/unchecking tasks
   const toggleComplete = async (task: Task) => {
-    await editTask(task.id, { id: task.id, completed: !task.completed });
+    const fullPayload: EditTask = {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      tags: task.tags.join(","), // Convert array to string
+      completed: !task.completed,
+      dueDate: task.dueDate,
+    };
+
+    await editTask(task.id, fullPayload);
   };
 
   // Dialog visibility logic
@@ -98,7 +108,7 @@ export function App() {
           <div className="flex items-center space-x-3">
             <img src={logo} className="h-8" alt="Logo" />
             <span className="text-2xl font-semibold tracking-tight text-white">
-              HelloTask
+              HelloNoto
             </span>
           </div>
           <button

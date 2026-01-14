@@ -34,10 +34,10 @@ export type NewTask = {
 
 export interface EditTask {
   id: number;
-  title?: string;
+  title: string;
   description?: string;
-  priority?: number;
-  tags?: string;
-  completed?: boolean;
+  priority: number;
+  tags: string;
+  completed: boolean;
   dueDate?: number;
 }

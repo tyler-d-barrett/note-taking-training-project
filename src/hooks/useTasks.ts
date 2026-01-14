@@ -93,7 +93,7 @@ export function useTasks() {
     const res = await fetch(`/api/tasks/${id}`, {
       method: "PUT",
       headers: headers(),
-      body: JSON.stringify({ payload }),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) throw new Error(await res.text());
