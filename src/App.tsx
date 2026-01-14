@@ -8,6 +8,7 @@ import { AuthForm } from "./components/AuthForm.tsx";
 import { TaskCard } from "./components/TaskCard";
 import { TaskControls } from "./components/TaskControls";
 import { TaskModal } from "./components/TaskModal";
+import { ThemeToggle } from "./components/ThemeToggle"; // Added
 import { useTasks } from "./hooks/useTasks";
 
 export function App() {
@@ -27,10 +28,10 @@ export function App() {
   );
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [formId, setFormId] = useState(0);
+
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
-    // Reload to ensure the useTasks hook picks up the new token
     window.location.reload();
   };
 
@@ -54,22 +55,19 @@ export function App() {
     setIsDialogOpen(true);
   }
 
-  // Helper for checking/unchecking tasks
   const toggleComplete = async (task: Task) => {
     const fullPayload: EditTask = {
       id: task.id,
       title: task.title,
       description: task.description,
       priority: task.priority,
-      tags: task.tags.join(","), // Convert array to string
+      tags: task.tags.join(","),
       completed: !task.completed,
       dueDate: task.dueDate,
     };
-
     await editTask(task.id, fullPayload);
   };
 
-  // Dialog visibility logic
   useEffect(() => {
     const dialog = dialogRef.current!;
     if (!dialog) return;
@@ -77,7 +75,6 @@ export function App() {
     if (!isDialogOpen && dialog.open) dialog.close();
   }, [isDialogOpen]);
 
-  // Dialog event listeners
   useEffect(() => {
     const dlg = dialogRef.current!;
     if (!dlg) return;
@@ -92,7 +89,8 @@ export function App() {
 
   if (!token) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      /* Using theme variable for background */
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-app-bg)]">
         <AuthForm
           mode={authMode}
           setMode={setAuthMode}
@@ -103,21 +101,27 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <nav className="flex bg-gray-900 shadow-lg">
+    /* Using theme variable for background and text */
+    <div className="min-h-screen bg-[var(--color-app-bg)] text-[var(--color-app-text)]">
+      {/* Nav styled for both modes - using dark: utility for the nav specific background */}
+      <nav className="flex border-b border-gray-200 bg-white shadow-md dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">
           <div className="flex items-center space-x-3">
             <img src={logo} className="h-8" alt="Logo" />
-            <span className="text-2xl font-semibold tracking-tight text-white">
+            <span className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               HelloNoto
             </span>
           </div>
-          <button
-            onClick={logout}
-            className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
-          >
-            Logout
-          </button>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle /> {/* Theme Toggle added here */}
+            <button
+              onClick={logout}
+              className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
 

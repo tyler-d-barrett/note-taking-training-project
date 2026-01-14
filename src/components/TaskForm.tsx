@@ -25,14 +25,23 @@ export function TaskForm({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const dueDate = dateStr ? new Date(dateStr).getTime() : undefined;
-
     onSubmit({ title, description, priority, tags, dueDate });
   }
 
+  // Common styles for all form inputs
+  const inputClasses = `
+    block w-full rounded-lg p-2.5 text-sm transition-colors outline-none
+    bg-gray-100 dark:bg-gray-800 
+    text-gray-900 dark:text-gray-100 
+    placeholder-gray-500 dark:placeholder-gray-400
+    border border-transparent focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+    [color-scheme:light] dark:[color-scheme:dark]
+  `;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
-        className="block w-full rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        className={inputClasses}
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Task title..."
@@ -40,39 +49,46 @@ export function TaskForm({
         required
       />
       <textarea
-        className="block h-24 w-full rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        className={`${inputClasses} h-24 resize-none`}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Details..."
       />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <select
           value={priority}
           onChange={(e) => setPriority(Number(e.target.value))}
-          className="flex-1 rounded-lg bg-gray-700 p-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-blue-500"
+          className={`${inputClasses} flex-1 cursor-pointer`}
         >
           <option value={0}>Low Priority</option>
           <option value={1}>Medium</option>
           <option value={2}>High</option>
         </select>
+
         <input
-          className="flex-1 rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+          className={`${inputClasses} flex-1`}
           value={tags}
           onChange={(e) => setTags(e.target.value)}
           placeholder="Tags (comma separated)"
         />
       </div>
 
-      <input
-        type="date"
-        className="flex-1 rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
-        value={dateStr}
-        onChange={(e) => setDateStr(e.target.value)}
-      />
+      <div className="flex flex-col gap-1">
+        <label className="px-1 text-[10px] font-bold tracking-wider text-gray-500 uppercase">
+          Due Date
+        </label>
+        <input
+          type="date"
+          className={inputClasses}
+          value={dateStr}
+          onChange={(e) => setDateStr(e.target.value)}
+        />
+      </div>
+
       <button
         type="submit"
-        className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+        className="mt-2 w-full rounded-lg bg-blue-600 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-blue-700 active:scale-[0.98]"
       >
         {submitLabel}
       </button>

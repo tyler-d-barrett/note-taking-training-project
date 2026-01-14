@@ -22,6 +22,7 @@ export function TaskModal({
   formId,
 }: TaskModalProps) {
   const formKey = selectedTask ? `edit-${selectedTask.id}` : `new-${formId}`;
+
   const handleSubmit = async (data: NewTask) => {
     if (selectedTask) {
       const fullPayload: EditTask = {
@@ -49,20 +50,39 @@ export function TaskModal({
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 m-auto w-full max-w-md rounded-lg shadow-xl backdrop:opacity-50 backdrop:backdrop-blur-md"
+      /* 1. Replaced hardcoded bg-white with var color
+         2. Added dark:border for definition
+         3. Updated backdrop to be dark-aware 
+      */
+      className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-gray-200 bg-[var(--color-card-bg)] text-[var(--color-app-text)] shadow-2xl transition-colors duration-300 backdrop:bg-black/40 backdrop:backdrop-blur-sm dark:border-gray-800 dark:backdrop:bg-black/60"
     >
       <div className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            {selectedTask ? "Edit Task" : "New Task"}
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-bold tracking-tight">
+            {selectedTask ? "Edit Task" : "Create Task"}
           </h2>
           <button
             onClick={() => setIsDialogOpen(false)}
-            className="text-slate-400 hover:text-slate-600"
+            className="rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+            aria-label="Close modal"
           >
-            ✕
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
+
         <TaskForm
           key={formKey}
           initialData={
@@ -76,7 +96,7 @@ export function TaskModal({
                 }
               : undefined
           }
-          submitLabel={selectedTask ? "Save" : "Create"}
+          submitLabel={selectedTask ? "Update Task" : "Create Task"}
           onSubmit={handleSubmit}
         />
       </div>

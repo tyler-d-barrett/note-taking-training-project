@@ -30,10 +30,13 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
   }
 
   return (
-    <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-xl">
+    /* Card background and border updated for dark mode */
+    <div className="w-full max-w-md rounded-xl border border-gray-200 bg-[var(--color-card-bg)] p-8 shadow-xl transition-colors dark:border-gray-800">
       <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 capitalize">{mode}</h2>
-        <p className="mt-2 text-sm text-gray-500">
+        <h2 className="text-3xl font-bold text-[var(--color-app-text)] capitalize">
+          {mode}
+        </h2>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {mode === "login"
             ? "Welcome back to HelloNoto"
             : "Create your account to get started"}
@@ -42,19 +45,21 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          /* Error box updated for dark mode readability */
+          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Email Address
           </label>
           <input
             type="email"
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-slate-600 transition outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+            /* Updated input colors: dark-gray bg and lighter borders in dark mode */
+            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-[var(--color-app-text)] transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -62,20 +67,20 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Password
           </label>
           <input
             type="password"
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-slate-600 transition outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-[var(--color-app-text)] transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <button className="w-full rounded-lg bg-gray-900 py-3 font-semibold text-white shadow-md transition-colors hover:bg-black">
+        <button className="w-full rounded-lg bg-gray-900 py-3 font-semibold text-white shadow-md transition-colors hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-700">
           {mode === "login" ? "Sign In" : "Create Account"}
         </button>
       </form>
@@ -86,7 +91,7 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
             setError("");
             setMode(mode === "login" ? "register" : "login");
           }}
-          className="text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline"
+          className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
         >
           {mode === "login"
             ? "Don't have an account? Register"

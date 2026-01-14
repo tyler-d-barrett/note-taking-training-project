@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  /* Define your theme colors as variables */
+  --color-app-bg: #ffffff;
+  --color-app-text: #213547;
+  --color-card-bg: #f9f9f9;
+}
+
+/* Update variables when the .dark class is present on <html> */
+.dark {
+  --color-app-bg: #242424;
+  --color-app-text: rgba(255, 255, 255, 0.87);
+  --color-card-bg: #2f2f2f;
+}
+
 @layer base {
   :root {
-    @apply bg-[#242424] font-sans text-[rgba(255,255,255,0.87)];
+    background-color: var(--color-app-bg);
+    color: var(--color-app-text);
   }
 }
 
