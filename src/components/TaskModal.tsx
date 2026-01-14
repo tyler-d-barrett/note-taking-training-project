@@ -54,7 +54,7 @@ export function TaskModal({
          2. Added dark:border for definition
          3. Updated backdrop to be dark-aware 
       */
-      className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-gray-200 bg-[var(--color-card-bg)] text-[var(--color-app-text)] shadow-2xl transition-colors duration-300 backdrop:bg-black/40 backdrop:backdrop-blur-sm dark:border-gray-800 dark:backdrop:bg-black/60"
+      className="bg-card-bg text-app-text fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-gray-200 shadow-2xl transition-colors duration-300 backdrop:bg-black/40 backdrop:backdrop-blur-sm dark:border-gray-800 dark:backdrop:bg-black/60"
     >
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">

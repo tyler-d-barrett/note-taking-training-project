@@ -31,11 +31,9 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
 
   return (
     /* Card background and border updated for dark mode */
-    <div className="w-full max-w-md rounded-xl border border-gray-200 bg-[var(--color-card-bg)] p-8 shadow-xl transition-colors dark:border-gray-800">
+    <div className="bg-card-bg w-full max-w-md rounded-xl border border-gray-200 p-8 shadow-xl transition-colors dark:border-gray-800">
       <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-[var(--color-app-text)] capitalize">
-          {mode}
-        </h2>
+        <h2 className="text-app-text text-3xl font-bold capitalize">{mode}</h2>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {mode === "login"
             ? "Welcome back to HelloNoto"
@@ -59,7 +57,7 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
             type="email"
             required
             /* Updated input colors: dark-gray bg and lighter borders in dark mode */
-            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-[var(--color-app-text)] transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
+            className="text-app-text mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -73,7 +71,7 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
           <input
             type="password"
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-[var(--color-app-text)] transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
+            className="text-app-text mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

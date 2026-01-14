@@ -90,7 +90,7 @@ export function App() {
   if (!token) {
     return (
       /* Using theme variable for background */
-      <div className="flex min-h-screen items-center justify-center bg-[var(--color-app-bg)]">
+      <div className="bg-app-bg flex min-h-screen items-center justify-center">
         <AuthForm
           mode={authMode}
           setMode={setAuthMode}
@@ -102,7 +102,7 @@ export function App() {
 
   return (
     /* Using theme variable for background and text */
-    <div className="min-h-screen bg-[var(--color-app-bg)] text-[var(--color-app-text)]">
+    <div className="bg-app-bg text-app-text min-h-screen">
       {/* Nav styled for both modes - using dark: utility for the nav specific background */}
       <nav className="flex border-b border-gray-200 bg-white shadow-md dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">

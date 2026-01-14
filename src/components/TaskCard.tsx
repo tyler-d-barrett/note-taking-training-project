@@ -50,7 +50,7 @@ export function TaskCard({
       className={`group relative flex min-h-48 flex-col rounded-xl border p-4 shadow-sm transition-all duration-300 ${
         task.completed
           ? "border-gray-200 bg-gray-50/50 opacity-70 dark:border-gray-800 dark:bg-gray-900/30"
-          : "border-gray-200 bg-[var(--color-card-bg)] hover:shadow-md dark:border-gray-800"
+          : "bg-card-bg border-gray-200 hover:shadow-md dark:border-gray-800"
       }`}
     >
       {/* Action Buttons - Adjusted for dark mode background */}
