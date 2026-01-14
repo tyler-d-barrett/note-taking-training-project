@@ -16,10 +16,17 @@ export function TaskForm({
   );
   const [priority, setPriority] = useState(initialData?.priority ?? 0);
   const [tags, setTags] = useState(initialData?.tags ?? "");
+  const [dateStr, setDateStr] = useState(
+    initialData?.dueDate
+      ? new Date(initialData.dueDate).toISOString().split("T")[0]
+      : "",
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit({ title, description, priority, tags });
+    const dueDate = dateStr ? new Date(dateStr).getTime() : undefined;
+
+    onSubmit({ title, description, priority, tags, dueDate });
   }
 
   return (
@@ -57,6 +64,12 @@ export function TaskForm({
         />
       </div>
 
+      <input
+        type="date"
+        className="flex-1 rounded-lg bg-gray-700 p-2.5 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+        value={dateStr}
+        onChange={(e) => setDateStr(e.target.value)}
+      />
       <button
         type="submit"
         className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"

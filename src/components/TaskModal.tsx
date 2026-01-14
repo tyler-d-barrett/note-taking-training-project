@@ -9,6 +9,7 @@ interface TaskModalProps {
   setSelectedTask: (task: Task | null) => void;
   createTask: (input: NewTask) => Promise<void>;
   editTask: (id: number, payload: EditTask) => Promise<void>;
+  formId: number;
 }
 
 export function TaskModal({
@@ -18,7 +19,9 @@ export function TaskModal({
   setSelectedTask,
   createTask,
   editTask,
+  formId,
 }: TaskModalProps) {
+  const formKey = selectedTask ? `edit-${selectedTask.id}` : `new-${formId}`;
   const handleSubmit = async (data: NewTask) => {
     if (selectedTask) {
       const fullPayload: EditTask = {
@@ -38,6 +41,7 @@ export function TaskModal({
     } else {
       await createTask(data);
     }
+
     setSelectedTask(null);
     setIsDialogOpen(false);
   };
@@ -60,7 +64,7 @@ export function TaskModal({
           </button>
         </div>
         <TaskForm
-          key={selectedTask?.id ?? "new"}
+          key={formKey}
           initialData={
             selectedTask
               ? {
@@ -68,6 +72,7 @@ export function TaskModal({
                   description: selectedTask.description,
                   priority: selectedTask.priority,
                   tags: selectedTask.tags.join(","),
+                  dueDate: selectedTask.dueDate,
                 }
               : undefined
           }

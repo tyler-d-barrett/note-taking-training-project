@@ -60,7 +60,6 @@ export function TaskCard({
           ✕
         </button>
       </div>
-
       <div className="flex items-start gap-3">
         <input
           type="checkbox"
@@ -79,7 +78,6 @@ export function TaskCard({
           </p>
         </div>
       </div>
-
       <div className="mt-4 flex flex-wrap gap-1">
         <span
           className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${priorityColors[task.priority]}`}
@@ -96,6 +94,11 @@ export function TaskCard({
         ))}
       </div>
 
+      {task.dueDate && (
+        <span className="pt-4 text-xs text-slate-400">
+          Due: {new Date(task.dueDate).toLocaleDateString()}
+        </span>
+      )}
       <time className="mt-auto pt-4 text-[10px] text-slate-400">
         Created: {new Date(task.createdAt).toLocaleDateString()}
       </time>

@@ -26,7 +26,7 @@ export function App() {
     localStorage.getItem("token"),
   );
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-
+  const [formId, setFormId] = useState(0);
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
@@ -45,6 +45,7 @@ export function App() {
 
   function openCreate() {
     setSelectedTask(null);
+    setFormId((prev) => prev + 1);
     setIsDialogOpen(true);
   }
 
@@ -70,7 +71,7 @@ export function App() {
 
   // Dialog visibility logic
   useEffect(() => {
-    const dialog = dialogRef.current;
+    const dialog = dialogRef.current!;
     if (!dialog) return;
     if (isDialogOpen && !dialog.open) dialog.showModal();
     if (!isDialogOpen && dialog.open) dialog.close();
@@ -78,7 +79,7 @@ export function App() {
 
   // Dialog event listeners
   useEffect(() => {
-    const dlg = dialogRef.current;
+    const dlg = dialogRef.current!;
     if (!dlg) return;
     const onClose = () => setIsDialogOpen(false);
     dlg.addEventListener("close", onClose);
@@ -150,6 +151,7 @@ export function App() {
         setSelectedTask={setSelectedTask}
         createTask={createTask}
         editTask={editTask}
+        formId={formId}
       />
     </div>
   );
