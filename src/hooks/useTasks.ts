@@ -111,5 +111,6 @@ export function useTasks() {
     createTask,
     deleteTask,
     editTask,
+    setTasks,
   };
 }

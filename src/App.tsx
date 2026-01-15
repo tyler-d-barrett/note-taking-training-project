@@ -21,6 +21,7 @@ export function App() {
     createTask,
     deleteTask,
     editTask,
+    setTasks,
   } = useTasks();
 
   const [token, setToken] = useState<string | null>(
@@ -55,11 +56,6 @@ export function App() {
     );
   };
 
-  // const filteredTasks =
-  //   priorityFilter === "all"
-  //     ? tasks
-  //     : tasks.filter((t) => t.priority === priorityFilter);
-
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
@@ -68,6 +64,7 @@ export function App() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    setTasks([]);
     setToken(null);
   };
 
