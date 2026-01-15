@@ -89,8 +89,8 @@ export function useTasks() {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }
 
-  async function editTask(id: number, payload: EditTask) {
-    const res = await fetch(`/api/tasks/${id}`, {
+  async function editTask(payload: EditTask) {
+    const res = await fetch(`/api/tasks/${payload.id}`, {
       method: "PUT",
       headers: headers(),
       body: JSON.stringify(payload),
@@ -99,7 +99,7 @@ export function useTasks() {
     if (!res.ok) throw new Error(await res.text());
 
     const task: Task = await res.json();
-    setTasks((ts) => ts.map((t) => (t.id === id ? task : t)));
+    setTasks((ts) => ts.map((t) => (t.id === payload.id ? task : t)));
   }
 
   return {

@@ -8,7 +8,7 @@ interface TaskModalProps {
   setIsDialogOpen: (isOpen: boolean) => void;
   setSelectedTask: (task: Task | null) => void;
   createTask: (input: NewTask) => Promise<void>;
-  editTask: (id: number, payload: EditTask) => Promise<void>;
+  editTask: (payload: EditTask) => Promise<void>;
   formId: number;
 }
 
@@ -38,7 +38,7 @@ export function TaskModal({
         dueDate: data.dueDate ?? selectedTask.dueDate,
       };
 
-      await editTask(selectedTask.id, fullPayload);
+      await editTask(fullPayload);
     } else {
       await createTask(data);
     }

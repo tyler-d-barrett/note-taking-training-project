@@ -3,12 +3,10 @@ import "./index.css";
 import logo from "./logo.svg";
 import type { Task, EditTask } from "./shared/task";
 import { AuthForm } from "./components/AuthForm.tsx";
-
-// New Task Components
 import { TaskCard } from "./components/TaskCard";
 import { TaskControls } from "./components/TaskControls";
 import { TaskModal } from "./components/TaskModal";
-import { ThemeToggle } from "./components/ThemeToggle"; // Added
+import { ThemeToggle } from "./components/ThemeToggle";
 import { useTasks } from "./hooks/useTasks";
 
 export function App() {
@@ -28,28 +26,25 @@ export function App() {
     localStorage.getItem("token"),
   );
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [formId, setFormId] = useState(0);
+  const [formId, setFormId] = useState(0); //need to reset formId to force refreshed form every instantiation
 
   const [priorityFilter, setPriorityFilter] = useState<number | "all">("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const allAvailableTags = Array.from(new Set(tasks.flatMap((t) => t.tags)));
 
-  // 3. Update the filter logic to be "Additive"
   const filteredTasks = tasks.filter((task) => {
+    //only return tasks that match selected priority and union of selected tags
     const matchesPriority =
       priorityFilter === "all" || task.priority === priorityFilter;
 
-    // If no tags are selected, show everything.
-    // If tags are selected, the task must contain AT LEAST ONE of the selected tags.
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every((tag) => task.tags.includes(tag));
+      selectedTags.some((tag) => task.tags.includes(tag));
 
     return matchesPriority && matchesTags;
   });
 
-  // 4. Helper to toggle tags
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
@@ -64,7 +59,7 @@ export function App() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setTasks([]);
+    setTasks([]); //empty out tasks after logout to prevent momentary visibility upon login
     setToken(null);
   };
 
@@ -74,7 +69,7 @@ export function App() {
 
   function openCreate() {
     setSelectedTask(null);
-    setFormId((prev) => prev + 1);
+    setFormId((prev) => prev + 1); //alter formId to force new render
     setIsDialogOpen(true);
   }
 
@@ -93,7 +88,7 @@ export function App() {
       completed: !task.completed,
       dueDate: task.dueDate,
     };
-    await editTask(task.id, fullPayload);
+    await editTask(fullPayload);
   };
 
   useEffect(() => {
@@ -117,7 +112,6 @@ export function App() {
 
   if (!token) {
     return (
-      /* Using theme variable for background */
       <div className="bg-app-bg flex min-h-screen items-center justify-center">
         <AuthForm
           mode={authMode}
@@ -129,9 +123,7 @@ export function App() {
   }
 
   return (
-    /* Using theme variable for background and text */
     <div className="bg-app-bg text-app-text min-h-screen">
-      {/* Nav styled for both modes - using dark: utility for the nav specific background */}
       <nav className="flex border-b border-gray-200 bg-white shadow-md dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between p-4">
           <div className="flex items-center space-x-3">
@@ -142,7 +134,7 @@ export function App() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <ThemeToggle /> {/* Theme Toggle added here */}
+            <ThemeToggle />
             <button
               onClick={logout}
               className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
