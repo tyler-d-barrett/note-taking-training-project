@@ -90,7 +90,6 @@ export function makeTaskRepo(conn: Database): TaskRepo {
     },
 
     update(accountId, input) {
-      console.log(input);
       const result = updateQuery.get({
         id: input.id,
         accountId: accountId,
