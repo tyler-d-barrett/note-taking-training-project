@@ -29,6 +29,12 @@ export function App() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [formId, setFormId] = useState(0);
 
+  const [priorityFilter, setPriorityFilter] = useState<number | "all">("all");
+  const filteredTasks =
+    priorityFilter === "all"
+      ? tasks
+      : tasks.filter((t) => t.priority === priorityFilter);
+
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
@@ -131,12 +137,14 @@ export function App() {
           hasMoreTasks={hasMoreTasks}
           isInitialLoading={isInitialLoading}
           isLoadingMore={isLoadingMore}
+          priorityFilter={priorityFilter}
+          setPriorityFilter={setPriorityFilter}
           openCreate={openCreate}
           fetchMoreTasks={fetchMoreTasks}
         />
 
         <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {tasks.map((t: Task) => (
+          {filteredTasks.map((t: Task) => (
             <TaskCard
               key={t.id}
               task={t}

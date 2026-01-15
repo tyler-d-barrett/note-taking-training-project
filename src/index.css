@@ -7,6 +7,8 @@
   --color-card-bg: #f9f9f9;
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 /* Update variables when the .dark class is present on <html> */
 .dark {
   --color-app-bg: #242424;

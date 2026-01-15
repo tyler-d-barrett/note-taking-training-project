@@ -14,11 +14,10 @@ export function TaskCard({
 }) {
   const [isPendingDelete, setIsPendingDelete] = useState(false);
 
-  // Adjusted priority colors for dark mode compatibility
   const priorityColors = [
-    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-    "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    "border bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-transparent",
+    "border bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:border-transparent",
+    "border bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-300 dark:border-transparent",
   ];
 
   if (isPendingDelete) {
@@ -108,7 +107,7 @@ export function TaskCard({
         {task.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-transparent bg-gray-100 px-2 py-0.5 text-[10px] text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+            className="rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-bold text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
           >
             #{tag}
           </span>
