@@ -9,6 +9,10 @@ interface TaskControlsProps {
   setPriorityFilter: (filter: number | "all") => void;
   openCreate: () => void;
   fetchMoreTasks: () => Promise<void>;
+  allAvailableTags: string[];
+  selectedTags: string[];
+  toggleTag: (tag: string) => void;
+  clearTags: () => void;
 }
 
 export function TaskControls({
@@ -20,6 +24,10 @@ export function TaskControls({
   setPriorityFilter,
   openCreate,
   fetchMoreTasks,
+  allAvailableTags,
+  selectedTags,
+  toggleTag,
+  clearTags,
 }: TaskControlsProps) {
   // 1. Full Page Loading State
   if (isInitialLoading && tasksLength === 0) {
@@ -100,6 +108,38 @@ export function TaskControls({
               </button>
             ))}
           </div>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-100 pt-6 dark:border-gray-800">
+          <span className="mb-1 w-full text-center text-[10px] font-black tracking-widest text-gray-400 uppercase">
+            Filter by Tags
+          </span>
+
+          {allAvailableTags.map((tag) => {
+            const isActive = selectedTags.includes(tag);
+
+            return (
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={`cursor-pointer rounded-full border px-3 py-1 text-[10px] font-bold transition-all duration-200 ${
+                  isActive
+                    ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                    : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                }`}
+              >
+                #{tag}
+              </button>
+            );
+          })}
+
+          {selectedTags.length > 0 && (
+            <button
+              onClick={clearTags}
+              className="ml-2 text-[10px] font-black tracking-tight text-red-500 uppercase hover:text-red-600 hover:underline"
+            >
+              Clear All
+            </button>
+          )}
         </div>
 
         {/* Global Action: New Task */}

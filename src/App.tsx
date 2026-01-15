@@ -30,10 +30,35 @@ export function App() {
   const [formId, setFormId] = useState(0);
 
   const [priorityFilter, setPriorityFilter] = useState<number | "all">("all");
-  const filteredTasks =
-    priorityFilter === "all"
-      ? tasks
-      : tasks.filter((t) => t.priority === priorityFilter);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const allAvailableTags = Array.from(new Set(tasks.flatMap((t) => t.tags)));
+
+  // 3. Update the filter logic to be "Additive"
+  const filteredTasks = tasks.filter((task) => {
+    const matchesPriority =
+      priorityFilter === "all" || task.priority === priorityFilter;
+
+    // If no tags are selected, show everything.
+    // If tags are selected, the task must contain AT LEAST ONE of the selected tags.
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.every((tag) => task.tags.includes(tag));
+
+    return matchesPriority && matchesTags;
+  });
+
+  // 4. Helper to toggle tags
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+  };
+
+  // const filteredTasks =
+  //   priorityFilter === "all"
+  //     ? tasks
+  //     : tasks.filter((t) => t.priority === priorityFilter);
 
   const handleAuthSuccess = (newToken: string) => {
     localStorage.setItem("token", newToken);
@@ -141,6 +166,10 @@ export function App() {
           setPriorityFilter={setPriorityFilter}
           openCreate={openCreate}
           fetchMoreTasks={fetchMoreTasks}
+          allAvailableTags={allAvailableTags}
+          selectedTags={selectedTags}
+          toggleTag={toggleTag}
+          clearTags={() => setSelectedTags([])}
         />
 
         <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
