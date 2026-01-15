@@ -36,7 +36,7 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
         <h2 className="text-app-text text-3xl font-bold capitalize">{mode}</h2>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {mode === "login"
-            ? "Welcome back to HelloNoto"
+            ? "Welcome back to TaskMaster"
             : "Create your account to get started"}
         </p>
       </div>

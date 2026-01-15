@@ -140,7 +140,7 @@ export function App() {
           <div className="flex items-center space-x-3">
             <img src={logo} className="h-8" alt="Logo" />
             <span className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-              HelloNoto
+              TaskMaster
             </span>
           </div>
 
