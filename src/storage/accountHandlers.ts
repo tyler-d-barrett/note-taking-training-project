@@ -2,7 +2,7 @@ import type { AccountRepo } from "./accountRepo.ts";
 import type { HttpResult } from "@/shared/httpResult.ts";
 import { createToken } from "@/shared/utils.ts";
 
-export function authHandlers(repo: AccountRepo) {
+export function makeAccountHandlers(repo: AccountRepo) {
   async function register(
     data: any,
   ): Promise<HttpResult<{ token: string; id: number } | { error: string }>> {

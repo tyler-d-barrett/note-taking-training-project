@@ -4,7 +4,7 @@ import { ensureSchema } from "@/storage/db";
 import { makeTaskRepo } from "@/storage/taskRepo";
 import { makeTaskHandlers } from "@/storage/taskHandlers";
 import { makeAccountRepo } from "@/storage/accountRepo";
-import { authHandlers } from "@/storage/accountHandlers";
+import { makeAccountHandlers } from "@/storage/accountHandlers";
 import type { Task } from "@/shared/task";
 
 export function makeTestContext() {
@@ -15,7 +15,7 @@ export function makeTestContext() {
   const authRepo = makeAccountRepo(db);
 
   const tasks = makeTaskHandlers(tasksRepo);
-  const auth = authHandlers(authRepo);
+  const auth = makeAccountHandlers(authRepo);
 
   return { db, tasks, auth };
 }

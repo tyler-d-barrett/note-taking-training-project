@@ -3,7 +3,7 @@ import index from "./index.html";
 import { db } from "./storage/db";
 import { seedDatabase } from "./storage/seed";
 import { makeAccountRepo } from "./storage/accountRepo";
-import { authHandlers } from "./storage/accountHandlers";
+import { makeAccountHandlers } from "./storage/accountHandlers";
 import { getAuthenticatedId } from "./shared/utils";
 import { makeTaskRepo } from "./storage/taskRepo";
 import { makeTaskHandlers } from "./storage/taskHandlers";
@@ -11,7 +11,7 @@ import { makeTaskHandlers } from "./storage/taskHandlers";
 const taskRepo = makeTaskRepo(db);
 const accountRepo = makeAccountRepo(db);
 
-const authApi = authHandlers(accountRepo);
+const authApi = makeAccountHandlers(accountRepo);
 const taskApi = makeTaskHandlers(taskRepo);
 
 export const server = serve({
