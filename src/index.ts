@@ -1,8 +1,6 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { db } from "./storage/db";
-import { makeNotesRepo } from "./storage/notesRepo";
-import { dbHandlers } from "./storage/notesDbHandler";
 import { seedDatabase } from "./storage/seed";
 import { makeAccountRepo } from "./storage/accountRepo";
 import { authHandlers } from "./storage/accountHandlers";
@@ -10,11 +8,9 @@ import { getAuthenticatedId } from "./shared/utils";
 import { makeTaskRepo } from "./storage/taskRepo";
 import { makeTaskHandlers } from "./storage/taskHandlers";
 
-const notesRepo = makeNotesRepo(db);
 const taskRepo = makeTaskRepo(db);
 const accountRepo = makeAccountRepo(db);
 
-const { postNote, putNote, deleteNote, getNotes } = dbHandlers(notesRepo);
 const authApi = authHandlers(accountRepo);
 const taskApi = makeTaskHandlers(taskRepo);
 
@@ -84,46 +80,6 @@ export const server = serve({
 
         const res = taskApi.deleteTask(accountId, id);
         return Response.json(res.json, { status: res.status });
-      },
-    },
-
-    "/api/notes": {
-      async POST(req: Bun.BunRequest) {
-        const data = await req.json().catch(() => ({}));
-        const res = postNote(data);
-        return Response.json(res.json ?? null, { status: res.status });
-      },
-
-      async GET(req) {
-        const url = new URL(req.url);
-
-        const limit = Number(url.searchParams.get("limit")) || 10;
-        const offset = Number(url.searchParams.get("offset")) || 0;
-
-        const res = getNotes(limit, offset);
-        return Response.json(res.json ?? null, { status: res.status });
-      },
-    },
-
-    "/api/notes/:id": {
-      async PUT(req) {
-        const id = Number(req.params.id);
-        if (!Number.isSafeInteger(id)) {
-          return Response.json({ status: 400, json: { error: "invalid id" } });
-        }
-
-        const data = await req.json();
-        const res = putNote(id, data);
-        return Response.json(res.json ?? null, { status: res.status });
-      },
-
-      async DELETE(req) {
-        const id = Number(req.params.id);
-        if (!Number.isSafeInteger(id)) {
-          return Response.json({ status: 400, json: { error: "invalid id" } });
-        }
-        const res = deleteNote(id);
-        return Response.json(res.json ?? null, { status: res.status });
       },
     },
   },

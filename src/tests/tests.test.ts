@@ -5,7 +5,7 @@ import { makeTaskRepo } from "@/storage/taskRepo";
 import { makeTaskHandlers } from "@/storage/taskHandlers";
 import { makeAccountRepo } from "@/storage/accountRepo";
 import { authHandlers } from "@/storage/accountHandlers";
-import type { NewTask, Task } from "@/shared/task";
+import type { Task } from "@/shared/task";
 
 export function makeTestContext() {
   const db = new Database(":memory:", { strict: true });
