@@ -29,7 +29,7 @@ export function TaskControls({
   toggleTag,
   clearTags,
 }: TaskControlsProps) {
-  // 1. Full Page Loading State
+  // Full Page Loading State
   if (isInitialLoading && tasksLength === 0) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center p-20">
@@ -59,7 +59,7 @@ export function TaskControls({
     );
   }
 
-  // 2. Empty State
+  // Empty State
   if (!isInitialLoading && tasksLength === 0) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 p-20 text-center">
@@ -79,10 +79,9 @@ export function TaskControls({
     );
   }
 
-  // 3. Main Controls State (Filter + Actions)
+  // Main Controls State (Filter + Actions)
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-6 pt-8">
-      {/* Filter Section */}
       <div className="flex flex-col items-center justify-between gap-4 border-b border-gray-200 pb-8 lg:flex-row dark:border-gray-800">
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <span className="text-xs font-black tracking-widest text-gray-400 uppercase">
@@ -142,7 +141,6 @@ export function TaskControls({
           )}
         </div>
 
-        {/* Global Action: New Task */}
         <button
           onClick={openCreate}
           className="flex w-full items-center justify-center rounded-xl bg-emerald-600 px-6 py-3 text-lg font-bold text-white shadow-md transition-all hover:bg-emerald-700 active:scale-95 sm:w-auto md:w-56 dark:bg-emerald-500"
@@ -164,7 +162,6 @@ export function TaskControls({
         </button>
       </div>
 
-      {/* Pagination Action (Only if tasks exist) */}
       {hasMoreTasks && (
         <div className="flex justify-center pt-4">
           <button

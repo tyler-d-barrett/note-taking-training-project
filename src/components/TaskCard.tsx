@@ -52,7 +52,6 @@ export function TaskCard({
           : "bg-card-bg border-gray-200 hover:shadow-md dark:border-gray-800"
       }`}
     >
-      {/* Action Buttons - Adjusted for dark mode background */}
       <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
         <button
           onClick={() => onEditClick(task)}
@@ -97,7 +96,6 @@ export function TaskCard({
         </div>
       </div>
 
-      {/* Metadata / Tags */}
       <div className="mt-4 flex flex-wrap gap-1">
         <span
           className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${priorityColors[task.priority]}`}

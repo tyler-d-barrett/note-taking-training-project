@@ -30,7 +30,6 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
   }
 
   return (
-    /* Card background and border updated for dark mode */
     <div className="bg-card-bg w-full max-w-md rounded-xl border border-gray-200 p-8 shadow-xl transition-colors dark:border-gray-800">
       <div className="mb-8 text-center">
         <h2 className="text-app-text text-3xl font-bold capitalize">{mode}</h2>
@@ -43,7 +42,6 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          /* Error box updated for dark mode readability */
           <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
             {error}
           </div>
@@ -56,7 +54,6 @@ export function AuthForm({ mode, setMode, onSuccess }: any) {
           <input
             type="email"
             required
-            /* Updated input colors: dark-gray bg and lighter borders in dark mode */
             className="text-app-text mt-1 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 transition outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800"
             placeholder="you@example.com"
             value={email}

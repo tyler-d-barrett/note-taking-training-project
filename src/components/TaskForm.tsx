@@ -28,7 +28,6 @@ export function TaskForm({
     onSubmit({ title, description, priority, tags, dueDate });
   }
 
-  // Common styles for all form inputs
   const inputClasses = `
     block w-full rounded-lg p-2.5 text-sm transition-colors outline-none
     bg-gray-100 dark:bg-gray-800 
