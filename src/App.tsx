@@ -10,6 +10,12 @@ import { ThemeToggle } from "./components/ThemeToggle";
 import { useTasks } from "./hooks/useTasks";
 
 export function App() {
+  const logout = () => {
+    localStorage.removeItem("token");
+    setTasks([]); //empty out tasks after logout to prevent momentary visibility upon login
+    setToken(null);
+  };
+
   const {
     tasks,
     hasMoreTasks,
@@ -20,7 +26,7 @@ export function App() {
     deleteTask,
     editTask,
     setTasks,
-  } = useTasks();
+  } = useTasks(logout);
 
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
@@ -55,12 +61,6 @@ export function App() {
     localStorage.setItem("token", newToken);
     setToken(newToken);
     window.location.reload();
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setTasks([]); //empty out tasks after logout to prevent momentary visibility upon login
-    setToken(null);
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);

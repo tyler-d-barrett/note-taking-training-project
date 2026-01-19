@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { EditTask, Task, NewTask } from "@/shared/task";
 
-export function useTasks() {
+export function useTasks(logout: () => void) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [hasMoreTasks, setHasMoreTasks] = useState<boolean>(true);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
@@ -22,6 +22,11 @@ export function useTasks() {
         const res = await fetch(`/api/tasks?limit=10&offset=0`, {
           headers: headers(),
         });
+
+        if (res.status === 401) {
+          logout();
+        }
+
         if (!res.ok) throw new Error("Auth failed or server error");
 
         const data: { tasks: Task[]; hasMore: boolean } = await res.json();
@@ -52,6 +57,10 @@ export function useTasks() {
         headers: headers(),
       });
 
+      if (res.status === 401) {
+        logout();
+      }
+
       if (!res.ok) throw new Error(await res.text());
 
       const data: { tasks: Task[]; hasMore: boolean } = await res.json();
@@ -71,6 +80,10 @@ export function useTasks() {
       headers: headers(),
       body: JSON.stringify(input),
     });
+
+    if (res.status === 401) {
+      logout();
+    }
 
     if (!res.ok) throw new Error(await res.text());
 
@@ -95,6 +108,10 @@ export function useTasks() {
       headers: headers(),
       body: JSON.stringify(payload),
     });
+
+    if (res.status === 401) {
+      logout();
+    }
 
     if (!res.ok) throw new Error(await res.text());
 
